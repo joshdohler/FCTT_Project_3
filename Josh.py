@@ -84,22 +84,42 @@ def ThModel():
 
 def Temp_Model():
     # read csv containing model data
-    df = pd.read_csv('Model_Training_Data_20.csv')
+    df0 = pd.read_csv('Model_Training_Data_0.csv')
 
-    t = np.array(df['Time (s)'][:])
-    I = np.array(df['Current (A)'][:])
-    V = np.array(df['Voltage (V)'][:])
+    t0 = np.array(df0['Time (s)'][:])
+    I0 = np.array(df0['Current (A)'][:])
+    V0 = np.array(df0['Voltage (V)'][:])
+
+    # read csv containing model data
+    df20 = pd.read_csv('Model_Training_Data_20.csv')
+
+    t20 = np.array(df20['Time (s)'][:])
+    I20 = np.array(df20['Current (A)'][:])
+    V20 = np.array(df20['Voltage (V)'][:])
+
+    # read csv containing model data
+    df40 = pd.read_csv('Model_Training_Data_40.csv')
+
+    t40 = np.array(df40['Time (s)'][:])
+    I40 = np.array(df40['Current (A)'][:])
+    V40 = np.array(df40['Voltage (V)'][:])
 
     # interested in discharge data
     # t = t[18000:]
     # I = -I[18000:]
     # V = V[18000:]
 
-    plt.plot(t,I)
+    plt.plot(t0,I0)
+    plt.plot(t20, I20)
+    plt.plot(t40, I40)
     plt.ylabel('Current')
+    plt.legend(['0C', '20C', '40C'])
     plt.show()
-    plt.plot(t,V)
+    plt.plot(t0,V0)
+    plt.plot(t20, V20)
+    plt.plot(t40, V40)
     plt.ylabel('Voltage')
+    plt.legend(['0C','20C','40C'])
     plt.show()
 
 # ThModel()
