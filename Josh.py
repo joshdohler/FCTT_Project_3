@@ -352,6 +352,7 @@ def ECNModel(temp, npulse, nSOC, plots=0):
     dvinf = abs(V_steady_state-V_max) if abs(V_steady_state-V_max) > abs(V_steady_state-V_min) else abs(V_steady_state-V_min)
     R1 = (dvinf / di) - R0
 
+
     # Time to settle after pulse application
     Vmax = V[V==V_max]
     tmax = t[V==Vmax[0]]
@@ -436,7 +437,7 @@ def ECNModel(temp, npulse, nSOC, plots=0):
 
     return np.array(Parameters)
 
-temp = 40
+temp = 0
 
 if temp == 0:
     last_pulse = 6
@@ -451,7 +452,9 @@ for i in range(8):
         lp = 8
     for j in range(lp):
         AllSOCParam[i*8+j] = ECNModel(temp,j,i)
-print(AllSOCParam)
+        # if i == 3 & j == 1:
+        #     print(ECNModel(temp,j,i))
+# print(AllSOCParam)
 
 np.savetxt('data.csv', (AllSOCParam[:,0],AllSOCParam[:,1],AllSOCParam[:,2]), delimiter=',')
 
