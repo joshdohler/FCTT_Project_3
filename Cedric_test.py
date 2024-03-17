@@ -28,13 +28,13 @@ R0_average = 0.019554687500000018
 
 C1_average = 1959.7753319403273
 
-R101 = 0.005
-R102 = 0.003
-b1 = -0.5
+R101 = 0.07           #@0: 0.06, @20: 0.07, @40: 0.05
+R102 = 0.006        #@0: 0.017, @20: 0.006, @40: 0.003
+b1 = -0.5         #@0: -0.5, @20: -0.5, @40: -0.5
 b2 = b1
-c1 = 60
-c2 = 30
-Offset = 0.0055
+c1 = 1          #@0: 0.5, @20: 1, @40: 1
+c2 = 30           #@0: 70, @20: 30, @40: 60
+Offset = 0.0055           #@0: 0.025, @20: 0.0055, @40: 0
 
 def R1_final(I):
     res = 0
@@ -60,18 +60,24 @@ R1_cont = [0 for i in range(N)]
 
 R0_cont = [0 for i in range(N)]
 
+R1_actual = R1_final(I_model[0])
+
 for k in range(N):
     SOCindex = round((SOC[0]-z[k])/SOC_step)
     OCV[SOCindex]
     OCV_cont[k] = OCV[SOCindex]
-    R1_cont[k] = R1_final(I_model[k])*I_R1[k]
-    R0_cont[k] = R0_average*I_model[k]
-    V_model[k] = OCV[SOCindex]-R1_final(I_model[k])*I_R1[k]-R0_average*I_model[k]
-    R1_final_list.append(R1_final(I_model[k]))
+    if I_model[k]==0 and I_model[k-1]!=0:
+        R1_actual = R1_final(I_model[k-1])
+    C1_actual = C1_average
+    R0_actual = R0_average
+    R1_cont[k] = R1_actual*I_R1[k]
+    R0_cont[k] = R0_actual*I_model[k]
+    V_model[k] = OCV[SOCindex]-R1_actual*I_R1[k]-R0_actual*I_model[k]
+    R1_final_list.append(R1_actual)
     if k!=N-1:
         DeltaT = Time[k+1]-Time[k]
         z[k+1] = z[k]-I_model[k]*(DeltaT)*100/(Q*3600)
-        I_R1[k+1] = np.exp(-DeltaT/(R1_final(I_model[k])*C1_average))*I_R1[k]+(1-np.exp(-DeltaT/(R1_final(I_model[k])*C1_average)))*I_model[k]
+        I_R1[k+1] = np.exp(-DeltaT/(R1_actual*C1_actual))*I_R1[k]+(1-np.exp(-DeltaT/(R1_actual*C1_actual)))*I_model[k]
 
 
 ## Plots
