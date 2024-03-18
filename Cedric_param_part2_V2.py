@@ -25,12 +25,14 @@ I_model_training = np.array(Model_Training['Current (A)'][:])
 
 time_end_impulse = []
 time_converged = []
+time_end_impulse_plus1 = []
 R0_list = []
 R1_list = []
 I_fit_R1 = []
 DeltaT_list = []
 C1_list = []
 V_impulse = []
+V_impulse_plus1 = []
 V_converged_list=[]
 
 R0_average = 0.019540297174958105
@@ -38,7 +40,9 @@ R0_average = 0.019540297174958105
 for i in range (N):
     if I_model_training[i]!=0 and I_model_training[i+1]==0:
         time_end_impulse.append(Time[i])
+        time_end_impulse_plus1.append(Time[i+1])
         V_impulse.append(V_model_training[i])
+        V_impulse_plus1.append(V_model_training[i+1])
         dV0 = V_model_training[i+1]-V_model_training[i]
         dI0 = I_model_training[i+1]-I_model_training[i]
         R0 = dV0/dI0
@@ -201,8 +205,9 @@ plt.show()
 plt.figure(8)
 plt.plot(time_converged,V_converged_list,"ob")
 plt.plot(time_end_impulse,V_impulse,"or")
+plt.plot(time_end_impulse_plus1,V_impulse_plus1,"og")
 plt.plot(Time,V_model_training)
 plt.xlabel('Time (s)')
 plt.ylabel('Potential (V)')
-plt.legend(['V_converged','V_model_training'])
+plt.legend(['V_converged','V_end_impulse','V_end_impulse_plus1','V_model_training'])
 plt.show()
