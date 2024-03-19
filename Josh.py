@@ -47,6 +47,7 @@ def ThModel():
         else:
             i += 1
 
+    print(SOC[0])
     for j in range(1,len(t)):
         SOC[j] = SOC[j-1] - 100*(I[j]*dt/3600)/Qn # SOC as percentage
 
@@ -54,6 +55,13 @@ def ThModel():
     SOC_ind = ((SOC_raw[0]-SOC)/dSOC-3).astype(int) # array with index corresponding to current SOC value
     OCV = OCV_raw[SOC_ind] # OCV at each time step in discharge
     V_model = OCV - I/1000*R0
+
+    plt.plot(t, SOC, 'k')
+    # plt.plot(t, V_model, 'r')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Voltage (V)')
+    plt.legend(['Experimental', 'Model'])
+    plt.show()
 
     plt.plot(t,V,'k')
     plt.plot(t,V_model,'r')
@@ -437,26 +445,30 @@ def ECNModel(temp, npulse, nSOC, plots=0):
 
     return np.array(Parameters)
 
-temp = 0
+def Tran_Model():
+    temp = 0
 
-if temp == 0:
-    last_pulse = 6
-else:
-    last_pulse = 8
-AllSOCParam = np.ndarray([8*7+last_pulse,3])
-AverageParam = []
-for i in range(8):
-    if i == 7:
-        lp = last_pulse
+    if temp == 0:
+        last_pulse = 6
     else:
-        lp = 8
-    for j in range(lp):
-        AllSOCParam[i*8+j] = ECNModel(temp,j,i)
-        # if i == 3 & j == 1:
-        #     print(ECNModel(temp,j,i))
-# print(AllSOCParam)
+        last_pulse = 8
+    AllSOCParam = np.ndarray([8*7+last_pulse,3])
+    AverageParam = []
+    for i in range(8):
+        if i == 7:
+            lp = last_pulse
+        else:
+            lp = 8
+        for j in range(lp):
+            AllSOCParam[i*8+j] = ECNModel(temp,j,i)
+            # if i == 3 & j == 1:
+            #     print(ECNModel(temp,j,i))
+    # print(AllSOCParam)
 
-np.savetxt('data.csv', (AllSOCParam[:,0],AllSOCParam[:,1],AllSOCParam[:,2]), delimiter=',')
+    np.savetxt('data.csv', (AllSOCParam[:,0],AllSOCParam[:,1],AllSOCParam[:,2]), delimiter=',')
 
-# ThModel()
+
+
+ThModel()
 # Temp_Model()
+# Tran_Model()
