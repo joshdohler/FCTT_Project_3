@@ -35,7 +35,7 @@ C1_list = []
 V_impulse = []
 V_converged_list=[]
 
-R0_average = 0.019540297174958105
+R0_average = 0.019554687500000018
 
 for i in range (N):
     if I_model_training[i]!=0 and I_model_training[i+1]==0 and Time[i] not in Time_change_SOC:
@@ -178,7 +178,7 @@ plt.legend(['Model'])
 plt.show()
 
 plt.figure(5)
-plt.plot(I_fit_R1[i:i2],R1_list[i:i2],"ob")
+plt.plot(I_fit_R1[i:i2],R0_list[i:i2],"ob")
 plt.xlabel('Current (A)')
 plt.ylabel('Resistance R0 (Ohm)')
 plt.legend(['Training data'])

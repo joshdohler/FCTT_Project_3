@@ -35,7 +35,7 @@ V_impulse = []
 V_impulse_plus1 = []
 V_converged_list=[]
 
-R0_average = 0.019540297174958105
+R0_average = 0.019608622253431483
 
 for i in range (N):
     if I_model_training[i]!=0 and I_model_training[i+1]==0:
@@ -182,32 +182,37 @@ plt.legend(['Model'])
 plt.show()
 
 plt.figure(5)
-plt.plot(I_fit_R1[i:i2],R1_list[i:i2],"ob")
+plt.plot(I_fit_R1[i:i2],R0_list[i:i2],"ob")
 plt.xlabel('Current (A)')
-plt.ylabel('Resistance R0 (Ohm)')
-plt.legend(['Training data'])
+plt.ylabel('Resistance $R_0$ ($\Omega$)')
 plt.show()
 
 plt.figure(6)
+plt.plot(I_fit_R1[i:i2],C1_list[i:i2],"ob")
+plt.xlabel('Current (A)')
+plt.ylabel('Capacity $C_1$ ($F$)')
+plt.show()
+
+plt.figure(7)
 plt.plot(I_fit_R1[i:i2],C1_list[i:i2],"ob")
 plt.xlabel('Current (A)')
 plt.ylabel('Capacité (F)')
 plt.legend(['Training data'])
 plt.show()
 
-plt.figure(7)
+plt.figure(8)
 plt.plot(Time,R1_final_list)
 plt.xlabel('Time (s)')
 plt.ylabel('R1_final (Ohm)')
 plt.legend(['Model'])
 plt.show()
 
-plt.figure(8)
+plt.figure(9)
 plt.plot(time_converged,V_converged_list,"ob")
 plt.plot(time_end_impulse,V_impulse,"or")
 plt.plot(time_end_impulse_plus1,V_impulse_plus1,"og")
 plt.plot(Time,V_model_training)
 plt.xlabel('Time (s)')
 plt.ylabel('Potential (V)')
-plt.legend(['V_converged','V_end_impulse','V_end_impulse_plus1','V_model_training'])
+plt.legend(['$V_{converged}$','$V_{end-impulse}$','$V_{end-impulse+1}$','$V_{training}$'])
 plt.show()
