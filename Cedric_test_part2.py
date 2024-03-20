@@ -66,8 +66,8 @@ for k in range(N):
     SOCindex = round((SOC[0]-z[k])/SOC_step)
     OCV[SOCindex]
     OCV_cont[k] = OCV[SOCindex]
-    if I_model[k]==0 and I_model[k-1]!=0:
-        R1_actual = R1_final(I_model[k-1])
+    if I_model[k]!=0:
+        R1_actual = R1_final(I_model[k])
     C1_actual = C1_average
     R0_actual = R0_average
     R1_cont[k] = R1_actual*I_R1[k]
