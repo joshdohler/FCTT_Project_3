@@ -22,10 +22,10 @@ def R0Temp():
 def R1SOC():
 
     SOC = np.arange(90,10,-10)
-    R1 = np.array([0.01761,0.01841,0.01801,0.01200,0.01481,0.01321,0.01841,0.03122])
+    R1 = np.array([0.01761,0.01841,0.01801,0.01500,0.01481,0.01321,0.01841,0.03122])
 
-    poly = np.poly1d(np.polyfit(SOC,R1,3))
-    x = np.linspace(20,90,100)
+    poly = np.poly1d(np.polyfit(SOC,R1,2))
+    x = np.linspace(0,100,100)
 
     plt.plot(x,poly(x),'--k')
     plt.scatter(SOC,R1)
@@ -36,22 +36,29 @@ def R1SOC():
 def R1Temp():
     avgTemp = np.array([273.15,293.15,313.15])
 
-    avgR1_60 = np.array([0.01020, 0.00600, 0.00500])
-    avgR1_30 = np.array([0.02240, 0.00650, 0.00505])
-    avgR1_90 = np.array([0.01205, 0.00800, 0.00640])
+    # 20A discharge
+    # avgR1_60 = np.array([0.01020, 0.00600, 0.00500])
+    # avgR1_30 = np.array([0.02240, 0.00650, 0.00505])
+    # avgR1_90 = np.array([0.01205, 0.00800, 0.00640])
 
-    # avgR1_60 = np.array([0.01500, 0.01200, 0.00761])
-    # avgR1_30 = np.array([0.01841,0.00800,0.00520])
-    # avgR1_90 = np.array([0.01761,0.00800,0.00680])
+    # 2.5A discharge
+    avgR1_60 = np.array([0.01500, 0.01200, 0.00761])
+    avgR1_30 = np.array([0.01841,0.00800,0.00520])
+    avgR1_90 = np.array([0.01761,0.00800,0.00680])
 
     R = 8.314
-    E = -12000
+    # E = -12000
 
     temp = np.linspace(260,330,200)
-    R1 = avgR1_60[1]*np.exp(-E/R*(1/temp-1/avgTemp[1]))
+
+    def R1_temp(temp,E):
+        return avgR1_90[1]*np.exp(-E/R*(1/temp-1/avgTemp[1]))
+
+    E, popc = curve_fit(R1_temp, avgTemp, avgR1_90, maxfev=99999)
+    print(E)
 
     plt.scatter(avgTemp,avgR1_60)
-    plt.plot(temp,R1,'--k')
+    plt.plot(temp,R1_temp(temp,E),'--k')
     plt.xlabel('Temperature (K)')
     plt.ylabel('R$_{1}$ (\u03A9)')
     plt.ylim([0,0.02])
@@ -127,13 +134,21 @@ def R1Temp_CurrentGauss():
     plt.show()
 
 def R1Temp_Current():
+
+    # R101 = 5.89893648e-03
+    # R102 = 8.94572149e+01
+    # b1 = 0
+    # b2 = 0.002
+    # c1 = 1.50345355e-01
+    # c2 = 3.21368776e-01
+    # Offset = 0.0055 # 90% 0.007 60% 0.0046
     R101 = 1.48113763e-01
     R102 = 5.65859345e-03
     b1 = 0
     b2 = 1.26842729e+00
     c1 = 3.30006677e-01
     c2 = 1.19474291e+02
-    Offset = 0.0055 # 90% 0.007 60% 0.0046
+    Offset = 0.0055
 
     I = -20
     R = 8.314
@@ -149,7 +164,7 @@ def R1Temp_Current():
 
         return R101*np.exp(-(I-b1)**2/c1)*np.exp(-E[SOC_index]/R*(1/T-1/T0))+R102*np.exp(-(I-b2)**2/c2)*np.exp(-E[SOC_index]/R*(1/T-1/T0))+Offset
 
-    T = np.linspace(150,330,200)
+    T = np.linspace(100,330,200)
 
     for SOC_index in range(3):
         R1 = R1_final(T,SOC_index)
@@ -159,12 +174,12 @@ def R1Temp_Current():
         plt.xlabel('Temperature (K)')
         plt.ylabel('R$_{1}$ (\u03A9)')
         plt.ylim([0, 0.025]) #([0, 0.025])
-        plt.xlim([150,340])
+        plt.xlim([100,340])
         plt.show()
 
 
 # R0Temp()
 # R1SOC()
-# R1Temp()
+R1Temp()
 # R1Temp_CurrentGauss()
-R1Temp_Current()
+# R1Temp_Current()

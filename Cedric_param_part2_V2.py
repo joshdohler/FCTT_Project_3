@@ -36,7 +36,7 @@ V_impulse = []
 V_impulse_plus1 = []
 V_converged_list=[]
 
-R0_average = 0.019540297174958105
+R0_average = 0.019554687500000018
 
 for i in range (N):
     if I_model_training[i]!=0 and I_model_training[i+1]==0:
@@ -112,13 +112,13 @@ R1_data = np.array(R1_list[i:i2])
 
 popt, popc = sci.curve_fit(R1_final, I_data, R1_data, maxfev = 999999999)
 
-r1_opt1, c1_opt1, r2_opt2, b2_opt2, c2_opt2 = popt
+r1_opt1, c1_opt1, r2_opt2, b2_opt, c2_opt2 = popt
 print(popt)
 I_data.sort()
 
 I_range = np.linspace(I_data[0], I_data[-1], 1000)
 
-R1_fit = R1_final(I_range, r1_opt1, c1_opt1, r2_opt2, b2_opt2, c2_opt2)
+R1_fit = R1_final(I_range, r1_opt1, c1_opt1, r2_opt2, b2_opt, c2_opt2)
 
 
 
