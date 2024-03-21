@@ -28,13 +28,13 @@ R0_average = 0.019554687500000018
 
 C1_average = 1962.9469051907095
 
-R101 = -119.02362263 #0.07           #@0: 0.06, @20: 0.07, @40: 0.05
-R102 = 119.14161295 #0.006        #@0: 0.017, @20: 0.006, @40: 0.003
-b1 = 0 #-0.5         #@0: -0.5, @20: -0.5, @40: -0.5
-b2 = b1
-c1 = 0.55169725#1          #@0: 0.5, @20: 1, @40: 1
-c2 = 0.55169743#30           #@0: 70, @20: 30, @40: 60
-Offset = 0.0055      #@0: 0.025, @20: 0.0055, @40: 0
+R101 = 1.48113763e-01
+R102 = 5.65859345e-03
+b1 = 0
+b2 = 1.26842729e+00
+c1 = 3.30006677e-01
+c2 = 1.19474291e+02
+Offset = 0.0055
 
 def R1_final(I):
     res = 0
@@ -85,31 +85,50 @@ for k in range(N):
 plt.figure(1)
 plt.plot(Time,V_model_training)
 plt.plot(Time,V_model,color='red', linestyle='dashed', linewidth=0.5)
-plt.plot(Time,R0_cont,color='black', linestyle='dashed', linewidth=0.5)
-plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
-plt.plot(Time,OCV_cont,color='purple', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,R0_cont,color='black', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,OCV_cont,color='purple', linestyle='dashed', linewidth=0.5)
 plt.xlabel('Time (s)')
 plt.ylabel('Voltage (V)')
-plt.legend(['Training data','Model','Contribution R0','Contribution R1','Contribution OCV'])
+plt.legend(['Testing data','Model'])
 plt.show()
 
-plt.figure(2)
-plt.plot(Time,I_model)
-plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
-plt.plot(Time,I_R1,color='red', linestyle='dashed', linewidth=0.5)
-plt.xlabel('Time (s)')
-plt.ylabel('Current (A)')
-plt.legend(['Training data','Contribution R1','I_R1'])
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+error = (V_model-V_model_training)/V_model_training*100
+ax1.plot(Time,error,'b-')
+ax2.plot(Time,I_model,'g-')
+#plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,I_R1,color='red', linestyle='dashed', linewidth=0.5)
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Percentage Error - Voltage (%)', color='b')
+ax1.set_ylim([-4,4])
+ax2.set_ylabel('Current (A)', color='g')
+ax2.set_ylim([-15.5,15.5])
 plt.show()
 
 plt.figure(3)
+plt.plot(Time,error,'b-')
+plt.xlabel('Time (s)')
+plt.ylabel('Percentage Error - Voltage (%)', color='b')
+plt.show()
+
+Error_total = 0
+for k in range(N):
+    Error_total += abs(V_model_training[k]-V_model[k])
+
+Error_total = Error_total/N
+print('Error_total=',Error_total)
+
+
+plt.figure(4)
 plt.plot(Time,z)
 plt.xlabel('Time (s)')
 plt.ylabel('SOC (%)')
 plt.legend(['Model'])
 plt.show()
 
-plt.figure(4)
+plt.figure(5)
 plt.plot(Time,R1_final_list)
 plt.xlabel('Time (s)')
 plt.ylabel('R1_final (Ohm)')

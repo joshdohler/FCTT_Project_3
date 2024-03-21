@@ -29,25 +29,25 @@ R0_average = 0.019554687500000018
 
 C1_average = 1962.9469051907095
 
-R101 = -119.02362263 #0.07           #@0: 0.06, @20: 0.07, @40: 0.05
-R102 = 119.14161295 #0.006        #@0: 0.017, @20: 0.006, @40: 0.003
-b1 = 0 #-0.5         #@0: -0.5, @20: -0.5, @40: -0.5
-b2 = b1
-c1 = 0.55169725#1          #@0: 0.5, @20: 1, @40: 1
-c2 = 0.55169743#30           #@0: 70, @20: 30, @40: 60
-Offset = 0.0055      #@0: 0.025, @20: 0.0055, @40: 0
+# R101 = -119.02362263 #0.07           #@0: 0.06, @20: 0.07, @40: 0.05
+# R102 = 119.14161295 #0.006        #@0: 0.017, @20: 0.006, @40: 0.003
+# b1 = 0 #-0.5         #@0: -0.5, @20: -0.5, @40: -0.5
+# b2 = b1
+# c1 = 0.55169725#1          #@0: 0.5, @20: 1, @40: 1
+# c2 = 0.55169743#30           #@0: 70, @20: 30, @40: 60
+# Offset = 0.0055      #@0: 0.025, @20: 0.0055, @40: 0
 
-# R101 = 1.48113763e-01
-# R102 = 5.65859345e-03
-# b1 = 0
-# b2 = 1.26842729e+00
-# c1 = 3.30006677e-01
-# c2 = 1.19474291e+02
-# Offset = 0.0055 # 90% 0.007 60% 0.0046
+R101 = 1.48113763e-01
+R102 = 5.65859345e-03
+b1 = 0
+b2 = 1.26842729e+00
+c1 = 3.30006677e-01
+c2 = 1.19474291e+02
+Offset = 0.0055 # 90% 0.007 60% 0.0046
 
 R = 8.314
 T0 = 293.15 #293.15  60%: 330
-E = -11750  # 60% -101000
+E = -12825  # 60% -101000
 
 def R1_final(T,I):
     return R101*np.exp(-(I-b1)**2/c1)*np.exp(-E/R*(1/T-1/T0))+R102*np.exp(-(I-b2)**2/c2)*np.exp(-E/R*(1/T-1/T0))+Offset
@@ -109,22 +109,68 @@ plt.plot(Time, T_cell)
 #plt.plot(Time,Q_contr,color='purple', linestyle='dashed', linewidth=0.5)
 plt.xlabel('Time (s)')
 plt.ylabel('Temperature (°C)')
-plt.legend(['Temperature - testing data','Temperature - modelisation'])
+plt.legend(['Testing data','Model'])
 plt.show()
 
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+error = (V_model-V_model_testing)/V_model_testing*100
+ax1.plot(Time,error,'b-')
+ax2.plot(Time,I_model,'g-')
+#plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,I_R1,color='red', linestyle='dashed', linewidth=0.5)
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Percentage Error - Voltage (%)', color='b')
+ax1.set_ylim([-4,4])
+ax2.set_ylabel('Current (A)', color='g')
+ax2.set_ylim([-15.5,15.5])
+plt.show()
 
-plt.figure(2)
+plt.figure(3)
+plt.plot(Time,error,'b-')
+plt.xlabel('Time (s)')
+plt.ylabel('Percentage Error - Voltage (%)', color='b')
+plt.show()
+
+Error_total = 0
+for k in range(N):
+    Error_total += abs(V_model_testing[k]-V_model[k])
+
+Error_total = Error_total/N
+print('Error_total=',Error_total)
+
+plt.figure(4)
 plt.plot(Time,I_model)
 plt.plot(Time,I_R1,color='red', linestyle='dashed', linewidth=0.5)
 plt.xlabel('Time (s)')
 plt.ylabel('Current (A)')
-plt.legend(['Training data','I_R1'])
+plt.legend(['testing data','I_R1'])
 plt.show()
 
-plt.figure(3)
+plt.figure(5)
 plt.plot(Time,V_model_testing)
 plt.plot(Time,V_model,color='red', linestyle='dashed', linewidth=0.5)
 plt.xlabel('Time (s)')
 plt.ylabel('Voltage (V)')
-plt.legend(['Voltage - testing data','Voltage - modelisation'])
+plt.legend(['Testing data','Model'])
+plt.show()
+
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+error = (T_cell-T_model_testing)/T_model_testing*100
+ax1.plot(Time,error,'b-')
+ax2.plot(Time,I_model,'g-')
+#plt.plot(Time,R1_cont,color='green', linestyle='dashed', linewidth=0.5)
+#plt.plot(Time,I_R1,color='red', linestyle='dashed', linewidth=0.5)
+ax1.set_xlabel('Time (s)')
+ax1.set_ylabel('Percentage Error - Temperature (%)', color='b')
+ax1.set_ylim([-0.6,0.6])
+ax2.set_ylabel('Current (A)', color='g')
+ax2.set_ylim([-15.5,15.5])
+plt.show()
+
+plt.figure(7)
+plt.plot(Time,error,'b-')
+plt.xlabel('Time (s)')
+plt.ylabel('Percentage Error - Temperature (%)', color='b')
 plt.show()
